@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NewFollowerInReplica")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a327609ddb0f0f35e12e59a331c5e9431b3fc3e2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bda9b06a9408c9fa53f2a3ae395c046ca56a9016")]
 [assembly: System.Reflection.AssemblyProductAttribute("NewFollowerInReplica")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NewFollowerInReplica")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
