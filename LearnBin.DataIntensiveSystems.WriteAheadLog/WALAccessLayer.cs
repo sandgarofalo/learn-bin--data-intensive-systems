@@ -152,29 +152,3 @@ public class WALAccessLayer : IAsyncDisposable
         _linesIndexerWriteStream.Dispose();
     }
 }
-
-/*
-
-2314112dqd
-trr
-r  rrrrrrr r e
-123
-
-
-
-
-2314112dqdtrrr\n
-
-rrrrrrr r e 123
-
-
-
-
-
-i want the stuff at i = 2
-
-15\n
-10\n
-13\n
-
-*/
