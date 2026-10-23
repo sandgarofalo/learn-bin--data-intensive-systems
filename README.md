@@ -4,4 +4,5 @@ Tiny projects dump where I get to deepen my understanding, hands on, of lower-le
 
 # Requirements
 
-An environment with the .NET 10 SDK, which is what the projects of the solution target.
+- An environment with the .NET 10 SDK, which is what the projects of the solution target.
+- CSharpier with its base settings, to keep the formatting standardized and readable.
