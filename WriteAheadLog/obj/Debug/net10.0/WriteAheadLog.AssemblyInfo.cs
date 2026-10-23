@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WriteAheadLog")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6b458bc6de594e93cf0da90fb54da84cd60099ba")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e26e5bb7af58b2d21eaa5efb8e3c47f61bb90d74")]
 [assembly: System.Reflection.AssemblyProductAttribute("WriteAheadLog")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WriteAheadLog")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
