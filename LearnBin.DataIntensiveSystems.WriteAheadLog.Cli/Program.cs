@@ -1,4 +1,4 @@
-﻿using WriteAheadLog;
+﻿using LearnBin.DataIntensiveSystems.WriteAheadLog;
 
 var terminalSeparatorGlyph = "-----------";
 var insertLogLineInputKey = "1";

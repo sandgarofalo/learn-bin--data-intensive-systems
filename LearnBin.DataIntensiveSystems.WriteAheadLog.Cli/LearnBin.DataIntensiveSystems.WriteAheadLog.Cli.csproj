@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../WriteAheadLog/WriteAheadLog.csproj" />
+    <ProjectReference Include="../LearnBin.DataIntensiveSystems.WriteAheadLog/LearnBin.DataIntensiveSystems.WriteAheadLog.csproj" />
   </ItemGroup>
 
 </Project>

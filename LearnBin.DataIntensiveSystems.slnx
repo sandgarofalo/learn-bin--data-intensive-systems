@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="LearnBin.DataIntensiveSystems.WriteAheadLog.Cli/LearnBin.DataIntensiveSystems.WriteAheadLog.Cli.csproj" />
+  <Project Path="LearnBin.DataIntensiveSystems.WriteAheadLog/LearnBin.DataIntensiveSystems.WriteAheadLog.csproj" />
+</Solution>
