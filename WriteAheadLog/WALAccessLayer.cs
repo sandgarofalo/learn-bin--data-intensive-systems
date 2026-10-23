@@ -28,9 +28,6 @@ public class WALAccessLayer : IAsyncDisposable
         ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
         _filePath = filePath;
 
-        File.Delete(_filePath);
-        File.Delete(LinesIndexerPath);
-
         _fileReadStream = new FileStream(
             _filePath,
             FileMode.OpenOrCreate,
