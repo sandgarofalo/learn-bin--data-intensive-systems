@@ -91,7 +91,7 @@ public class WALAccessLayer : IAsyncDisposable
         await _linesIndexerWriteStream.FlushAsync();
     }
 
-    public async Task<string> Read(int index)
+    public async Task<string?> Read(int index)
     {
         var totalBytesRead = 0;
         var totalBytesToPassForReadingOffset = index * 4; // final addition to account for newlines
@@ -131,7 +131,9 @@ public class WALAccessLayer : IAsyncDisposable
             logTextBytes.Add((byte)bInInt);
         }
 
-        return new string(Encoding.ASCII.GetChars([.. logTextBytes]));
+        return logTextBytes.Count is 0
+            ? null
+            : new string(Encoding.ASCII.GetChars([.. logTextBytes]));
 
         // 10 20 10 30
         // 50 60 30 10
