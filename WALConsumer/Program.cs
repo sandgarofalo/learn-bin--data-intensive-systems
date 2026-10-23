@@ -1,8 +1,11 @@
 ﻿using WriteAheadLog;
 
-var separator = "-----------";
+var terminalSeparatorGlyph = "-----------";
+var insertLogLineInputKey = "1";
+var readLogLineInputKey = "2";
+var exitProcessInputKey = "e";
 
-Console.WriteLine($"WAL consumer: beginning\n{separator}");
+Console.WriteLine($"WAL consumer: beginning\n{terminalSeparatorGlyph}");
 
 Console.WriteLine("WAL consumer: loading processes...");
 await using var walAL = new WALAccessLayer(Path.Combine(AppContext.BaseDirectory, "logs.bin"));
@@ -11,14 +14,23 @@ Console.WriteLine("WAL consumer: finished loading\n---------");
 while (true)
 {
     Console.WriteLine(
-        $"WAL consumer: select operation\n- Press '1' for appending log\n- Input '2' for reading a specific log line\n- Input 'e' to exit proces\n{separator}"
+        string.Join(
+            '\n',
+            [
+                "WAL consumer: select operation",
+                $"- Input '{insertLogLineInputKey}' for appending log",
+                $"- Input '{readLogLineInputKey}' for reading a specific log line",
+                $"- Input '{exitProcessInputKey}' to exit proces",
+                terminalSeparatorGlyph,
+            ]
+        )
     );
+
     Console.Write("waiting for input: ");
     var input = Console.ReadLine();
-
     Console.WriteLine($"selected: {input}");
 
-    if (input == "1")
+    if (input == insertLogLineInputKey)
     {
         string logText;
         var valid = true;
@@ -36,7 +48,7 @@ while (true)
 
         await walAL.AppendAsync(logText!);
     }
-    else if (input == "2")
+    else if (input == readLogLineInputKey)
     {
         Console.WriteLine("insert position of log line to read: ");
         var logLine = Console.ReadLine()!;
@@ -45,7 +57,7 @@ while (true)
             $"Log line at #{logLine}: {await walAL.Read(Convert.ToInt32(logLine) - 1)}"
         );
     }
-    else if (input == "e")
+    else if (input == exitProcessInputKey)
     {
         return;
     }
