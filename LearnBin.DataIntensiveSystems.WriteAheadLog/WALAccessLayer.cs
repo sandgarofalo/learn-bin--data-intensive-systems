@@ -125,11 +125,6 @@ public class WALAccessLayer : IAsyncDisposable
         return logTextBytes.Count is 0
             ? null
             : new string(Encoding.UTF8.GetChars([.. logTextBytes]));
-
-        // 10 20 10 30
-        // 50 60 30 10
-        // 00 20 ab 20
-        // 50 50 50 50
     }
 
     public async ValueTask DisposeAsync()
