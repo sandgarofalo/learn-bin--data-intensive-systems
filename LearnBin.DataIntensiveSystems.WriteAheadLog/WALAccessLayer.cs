@@ -58,27 +58,21 @@ public class WALAccessLayer : IAsyncDisposable
     public async Task AppendAsync(string logText)
     {
         ArgumentException.ThrowIfNullOrEmpty(logText);
+        if (logText.Contains('\n'))
+            throw new ArgumentException(
+                "Can't include newline character(s) in the log text",
+                nameof(logText)
+            );
 
         int logTextLength = 0;
-        using var pending = new MemoryStream();
 
-        foreach (var b in Encoding.ASCII.GetBytes(logText))
+        foreach (var b in Encoding.UTF8.GetBytes(logText))
         {
-            if (b == Convert.ToByte('\n'))
-            {
-                pending.SetLength(0);
-                throw new ArgumentException(
-                    "Can't include newline character(s) in the log text",
-                    nameof(logText)
-                );
-            }
-
-            pending.WriteByte(b);
+            _fileWriteStream.WriteByte(b);
             logTextLength++;
         }
 
-        pending.WriteByte(Convert.ToByte('\n'));
-        pending.WriteTo(_fileWriteStream);
+        _fileWriteStream.WriteByte(Convert.ToByte('\n'));
         await _fileWriteStream.FlushAsync();
 
         foreach (var b in BitConverter.GetBytes(logTextLength))
@@ -130,7 +124,7 @@ public class WALAccessLayer : IAsyncDisposable
 
         return logTextBytes.Count is 0
             ? null
-            : new string(Encoding.ASCII.GetChars([.. logTextBytes]));
+            : new string(Encoding.UTF8.GetChars([.. logTextBytes]));
 
         // 10 20 10 30
         // 50 60 30 10
