@@ -84,11 +84,6 @@ public class WALAccessLayer : IAsyncDisposable
         foreach (var b in BitConverter.GetBytes(logTextLength))
         {
             _linesIndexerWriteStream.WriteByte(b);
-
-            if (new Random().NextInt64(1, 10) % 2 != 0)
-            {
-                Environment.FailFast("crash");
-            }
         }
         await _linesIndexerWriteStream.FlushAsync();
     }
