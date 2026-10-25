@@ -63,19 +63,46 @@ public class WALAccessLayer : IAsyncDisposable
                 "Can't include newline character(s) in the log text",
                 nameof(logText)
             );
+        logText += '\n';
 
         int logTextLength = 0;
-
         foreach (var b in Encoding.UTF8.GetBytes(logText))
         {
             _fileWriteStream.WriteByte(b);
             logTextLength++;
         }
 
-        _fileWriteStream.WriteByte(Convert.ToByte('\n'));
         await _fileWriteStream.FlushAsync();
 
-        foreach (var b in BitConverter.GetBytes(logTextLength))
+        var lastRegisteredIndexOffset = 0;
+        var lastRegisteredIndexOffsetBytes = new List<byte>();
+
+        if (_linesIndexerReadStream.Length > 0)
+        {
+            _linesIndexerReadStream.Seek(-4, SeekOrigin.End);
+
+            for (var i = 0; i < 4; i++)
+            {
+                var b = _linesIndexerReadStream.ReadByte();
+
+                lastRegisteredIndexOffsetBytes.Add(Convert.ToByte(b));
+
+                if (b == -1)
+                {
+                    break;
+                }
+            }
+
+            lastRegisteredIndexOffset = BitConverter.ToInt32(
+                lastRegisteredIndexOffsetBytes.ToArray()
+            );
+        }
+        else
+        {
+            lastRegisteredIndexOffset = -logTextLength;
+        }
+
+        foreach (var b in BitConverter.GetBytes(logTextLength + lastRegisteredIndexOffset))
         {
             _linesIndexerWriteStream.WriteByte(b);
         }
@@ -84,29 +111,23 @@ public class WALAccessLayer : IAsyncDisposable
 
     public async Task<string?> Read(int index)
     {
-        var totalBytesRead = 0;
-        var totalBytesToPassForReadingOffset = index * 4;
+        List<byte> totalFileOffsetBytes = [];
         var offset = 0;
-        List<byte> tempBytes = [];
 
-        _linesIndexerReadStream.Seek(0, SeekOrigin.Begin);
-
-        while (totalBytesRead < totalBytesToPassForReadingOffset)
+        if (index != 0 && _linesIndexerReadStream.Length > 0)
         {
-            tempBytes.Add((byte)_linesIndexerReadStream.ReadByte());
-            totalBytesRead++;
+            _linesIndexerReadStream.Seek(index * 4, SeekOrigin.Begin);
 
-            var remainder = totalBytesRead % 4;
-            if (remainder == 0)
+            while (totalFileOffsetBytes.Count < 4)
             {
-                var localOffset = BitConverter.ToInt32(tempBytes.ToArray());
-                offset += localOffset;
-                tempBytes.Clear();
+                totalFileOffsetBytes.Add((byte)_linesIndexerReadStream.ReadByte());
             }
+
+            offset = BitConverter.ToInt32(totalFileOffsetBytes.ToArray());
         }
 
         List<byte> logTextBytes = [];
-        _fileReadStream.Seek(offset + index, SeekOrigin.Begin);
+        _fileReadStream.Seek(offset, SeekOrigin.Begin);
         var foundEnd = false;
 
         while (!foundEnd)
