@@ -63,46 +63,19 @@ public class WALAccessLayer : IAsyncDisposable
                 "Can't include newline character(s) in the log text",
                 nameof(logText)
             );
-        logText += '\n';
 
-        int logTextLength = 0;
         foreach (var b in Encoding.UTF8.GetBytes(logText))
         {
             _fileWriteStream.WriteByte(b);
-            logTextLength++;
         }
-
+        _fileWriteStream.WriteByte((byte)'\n');
         await _fileWriteStream.FlushAsync();
 
-        var lastRegisteredIndexOffset = 0;
-        var lastRegisteredIndexOffsetBytes = new List<byte>();
+        Console.WriteLine(
+            $"Finished writing log text '{logText}': position of stream: '{_fileWriteStream.Position}'"
+        );
 
-        if (_linesIndexerReadStream.Length > 0)
-        {
-            _linesIndexerReadStream.Seek(-4, SeekOrigin.End);
-
-            for (var i = 0; i < 4; i++)
-            {
-                var b = _linesIndexerReadStream.ReadByte();
-
-                lastRegisteredIndexOffsetBytes.Add(Convert.ToByte(b));
-
-                if (b == -1)
-                {
-                    break;
-                }
-            }
-
-            lastRegisteredIndexOffset = BitConverter.ToInt32(
-                lastRegisteredIndexOffsetBytes.ToArray()
-            );
-        }
-        else
-        {
-            lastRegisteredIndexOffset = -logTextLength;
-        }
-
-        foreach (var b in BitConverter.GetBytes(logTextLength + lastRegisteredIndexOffset))
+        foreach (var b in BitConverter.GetBytes((int)_fileWriteStream.Position))
         {
             _linesIndexerWriteStream.WriteByte(b);
         }
@@ -114,9 +87,9 @@ public class WALAccessLayer : IAsyncDisposable
         List<byte> totalFileOffsetBytes = [];
         var offset = 0;
 
-        if (index != 0 && _linesIndexerReadStream.Length > 0)
+        if (index != 0)
         {
-            _linesIndexerReadStream.Seek(index * 4, SeekOrigin.Begin);
+            _linesIndexerReadStream.Seek((index - 1) * 4, SeekOrigin.Begin);
 
             while (totalFileOffsetBytes.Count < 4)
             {
