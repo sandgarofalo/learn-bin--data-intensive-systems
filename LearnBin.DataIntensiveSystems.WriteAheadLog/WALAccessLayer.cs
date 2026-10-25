@@ -85,7 +85,7 @@ public class WALAccessLayer : IAsyncDisposable
     public async Task<string?> Read(int index)
     {
         var totalBytesRead = 0;
-        var totalBytesToPassForReadingOffset = index * 4; // final addition to account for newlines
+        var totalBytesToPassForReadingOffset = index * 4;
         var offset = 0;
         List<byte> tempBytes = [];
 
