@@ -7,6 +7,13 @@ RootCommand root = new("CLI tool to CRUD the write-ahead log");
 
 var readCommand = new Command("read", "Reads a specific log line");
 var readCommandPositionArg = new Argument<int>("position") { Arity = ArgumentArity.ExactlyOne };
+readCommandPositionArg.Validators.Add(r =>
+{
+    if (r.GetValue(readCommandPositionArg) < 1)
+    {
+        r.AddError("Position value must be greater or equal to 1");
+    }
+});
 readCommand.Arguments.Add(readCommandPositionArg);
 readCommand.SetAction(async parseResult =>
 {
