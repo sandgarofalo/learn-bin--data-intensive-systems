@@ -2,7 +2,7 @@
 
 namespace LearnBin.DataIntensiveSystems.WriteAheadLog;
 
-public class WALAccessLayer : IAsyncDisposable
+public class WALAccessLayer : IAsyncDisposable, IWALAccessLayer
 {
     private readonly FileStream _fileReadStream;
     private readonly FileStream _fileWriteStream;
