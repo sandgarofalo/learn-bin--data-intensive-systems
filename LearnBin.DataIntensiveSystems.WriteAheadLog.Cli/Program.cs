@@ -1,7 +1,7 @@
 ﻿using System.CommandLine;
 using LearnBin.DataIntensiveSystems.WriteAheadLog;
 
-await using var walAL = new WALAccessLayer(Path.Combine(AppContext.BaseDirectory, "logs.bin"));
+var walPath = Path.Combine(AppContext.BaseDirectory, "logs.bin");
 
 RootCommand root = new("CLI tool to CRUD the write-ahead log");
 
@@ -17,6 +17,7 @@ readCommandPositionArg.Validators.Add(r =>
 readCommand.Arguments.Add(readCommandPositionArg);
 readCommand.SetAction(async parseResult =>
 {
+    await using var walAL = new WALAccessLayer(walPath);
     Console.WriteLine(await walAL.Read(parseResult.GetValue(readCommandPositionArg) - 1));
 });
 
@@ -42,6 +43,7 @@ appendCommand.Validators.Add(r =>
 });
 appendCommand.SetAction(async parseResult =>
 {
+    await using var walAL = new WALAccessLayer(walPath);
     await walAL.AppendAsync(parseResult.GetValue(appendCommandTextArg)!);
 });
 root.Subcommands.Add(appendCommand);
